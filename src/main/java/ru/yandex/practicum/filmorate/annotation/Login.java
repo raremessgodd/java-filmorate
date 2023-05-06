@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.annotation;
 
 import javax.validation.Constraint;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -18,9 +16,3 @@ public @interface Login {
     Class<? extends Payload>[] payload() default {};
 }
 
-class LoginValidator implements ConstraintValidator<Login, String> {
-    @Override
-    public boolean isValid(String login, ConstraintValidatorContext constraintValidatorContext) {
-        return !(login.contains(" ") || login.isEmpty());
-    }
-}
