@@ -5,51 +5,48 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.time.LocalDate;
+import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-@RestController("/users")
 @Slf4j
+@RestController
 public class UserController {
     private final HashMap<Integer, User> users = new HashMap<>();
+    private int id = 1;
 
-    @GetMapping
-    public HashMap<Integer, User> getAll() {
-        return users;
+    @GetMapping(value = "/users")
+    public List<User> getAll() {
+        log.info("Количество пользователей: " + users.size());
+        return new ArrayList<>(users.values());
     }
 
-    @PostMapping
-    public void create(@RequestBody User newUser) {
-        if (checkValidation(newUser)) {
-            log.info("Пользователь " + newUser.getLogin() + " добален.");
-            users.put(newUser.getId(), newUser);
-        }
+    @PostMapping(value = "/users")
+    public User create(@Valid @RequestBody User newUser) {
+        checkName(newUser);
+        newUser.setId(id++);
+        log.info("Пользователь " + newUser.getLogin() + " добален.");
+        users.put(newUser.getId(), newUser);
+        return newUser;
     }
 
-    @PutMapping
-    public void update(@RequestBody User newUser) {
-        if (checkValidation(newUser)) {
+    @PutMapping(value = "/users")
+    public User update(@Valid @RequestBody User newUser) {
+        checkName(newUser);
+        if (users.containsKey(newUser.getId())) {
             log.info("Пользователь " + newUser.getLogin() + " обновлен.");
             users.put(newUser.getId(), newUser);
+        } else {
+            log.warn("Пользователь " + newUser.getLogin() + " не найден.");
+            throw new ValidationException("Такого пользователя не существует.");
         }
+        return newUser;
     }
 
-    private boolean checkValidation (User newUser) {
-        if (newUser.getEmail().isEmpty() || !newUser.getEmail().contains("@")) {
-            log.warn("Указан некорректный e-mail.", new ValidationException());
-            throw new ValidationException("Указан некорректный e-mail.");
-        }
-        if (newUser.getLogin().isEmpty() || newUser.getLogin().contains(" ")) {
-            log.warn("Указан некорректный логин.", new ValidationException());
-            throw new ValidationException("Указан некорректный логин.");
-        }
-        if (newUser.getBirthdayDate().isAfter(LocalDate.now())) {
-            log.warn("День рождения не может быть позже настоящего времени.", new ValidationException());
-            throw new ValidationException("День рождения не может быть позже настоящего времени.");
-        }
-        if (newUser.getName().isEmpty()) {
+    private void checkName(User newUser) {
+        if (newUser.getName() == null) {
             newUser.setName(newUser.getLogin());
         }
-        return true;
     }
 }
