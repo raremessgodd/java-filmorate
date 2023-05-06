@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy= LoginValidator.class)
+@Constraint(validatedBy = LoginValidator.class)
 public @interface Login {
     String message() default "{value.negative}";
     Class<?>[] groups() default {};
