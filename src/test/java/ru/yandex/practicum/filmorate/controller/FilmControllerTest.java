@@ -1,22 +1,26 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.time.LocalDate;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
-    private FilmController controller;
+    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     private Film film;
 
     @BeforeEach
-    void updateController() {
-        controller = new FilmController();
-
+    void setUp() {
         film = Film.builder()
                 .id(1)
                 .releaseDate(LocalDate.now())
@@ -26,51 +30,48 @@ class FilmControllerTest {
                 .build();
     }
 
+    @AfterEach
+    void checkValidation() {
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        assertEquals(1, violations.size(), "Валидация некорректна");
+    }
+
     @Test
     void nameValidation() {
         film.setName("");
-
-        ValidationException exc = assertThrows(ValidationException.class,
-                () -> controller.create(film),
-                "Не выкидывается исключение.");
-        assertEquals("Не заполнено поле названия фильма.",
-                exc.getMessage(),
-                "Выводится неправильное сообщение.");
     }
 
     @Test
     void descriptionValidation() {
         film.setDescription("a".repeat(201));
-
-        ValidationException exc = assertThrows(ValidationException.class,
-                () -> controller.create(film),
-                "Не выкидывается исключение.");
-        assertEquals("Описание фильма слишком длинное.",
-                exc.getMessage(),
-                "Выводится неправильное сообщение.");
     }
 
     @Test
     void releaseDateValidation() {
         film.setReleaseDate(LocalDate.of(1895, 1, 27));
-
-        ValidationException exc = assertThrows(ValidationException.class,
-                () -> controller.create(film),
-                "Не выкидывается исключение.");
-        assertEquals("Указана неверная дата выпуска фильма.",
-                exc.getMessage(),
-                "Выводится неправильное сообщение.");
     }
 
     @Test
     void durationValidation() {
         film.setDuration(-1);
+    }
 
-        ValidationException exc = assertThrows(ValidationException.class,
-                () -> controller.create(film),
+    @AfterAll
+    static void updateEmptyName() {
+        FilmController controller = new FilmController();
+        Film film = Film.builder()
+                .id(1)
+                .releaseDate(LocalDate.now())
+                .description("description")
+                .name("")
+                .duration(100)
+                .build();
+
+        ValidationException e = assertThrows(ValidationException.class,
+                () -> controller.update(film),
                 "Не выкидывается исключение.");
-        assertEquals("Продолжительность фильма не может быть отрицательной.",
-                exc.getMessage(),
-                "Выводится неправильное сообщение.");
+        assertEquals("Такого фильма не существует.",
+                e.getMessage(),
+                "Выводится неверное сообщение об ошибке.");
     }
 }
