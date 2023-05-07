@@ -18,14 +18,14 @@ public class FilmController {
 
     @GetMapping(value = "/films")
     public List<Film> getAll() {
-        log.info("Количство загруженых фильмов: " + films.size());
+        log.info(String.format("Количество загруженых фильмов: %d", films.size()));
         return new ArrayList<>(films.values());
     }
 
     @PostMapping(value = "/films")
     public Film create(@Valid @RequestBody Film newFilm) {
         newFilm.setId(id++);
-        log.info("Фильм " + newFilm.getName() + " добавлен.");
+        log.info(String.format("Фильм %s добавлен.", newFilm.getName()));
         films.put(newFilm.getId(), newFilm);
         return newFilm;
     }
@@ -33,10 +33,10 @@ public class FilmController {
     @PutMapping(value = "/films")
     public Film update(@Valid @RequestBody Film newFilm) {
         if (films.containsKey(newFilm.getId())) {
-            log.info("Фильм " + newFilm.getName() + " обновлен.");
+            log.info(String.format("Фильм %s обновлен.", newFilm.getName()));
             films.put(newFilm.getId(), newFilm);
         } else {
-            log.info("Фильм " + newFilm.getName() + " не найден.");
+            log.info(String.format("Фильм %s не найден.", newFilm.getName()));
             throw new ValidationException("Такого фильма не существует.");
         }
         return newFilm;

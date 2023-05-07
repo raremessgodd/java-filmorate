@@ -10,13 +10,13 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class Film {
-    int id;
+    private int id;
     @NotEmpty(message = "Не заполнено поле названия фильма.")
-    String name;
+    private String name;
     @Size(max = 200, message = "Описание фильма слишком длинное.")
-    String description;
+    private String description;
     @AfterFirstFilm(message = "Указана неверная дата выпуска фильма.")
-    LocalDate releaseDate;
+    private LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма не может быть отрицательной.")
-    int duration;
+    private int duration;
 }

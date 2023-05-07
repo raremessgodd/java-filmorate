@@ -13,12 +13,12 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class User {
-    int id;
+    private int id;
     @Email(message = "Указан некорректный e-mail") @NotEmpty(message = "Email не указан")
-    String email;
+    private String email;
     @NotNull(message = "Не указан логин") @Login(message = "Указан некорректный логин")
-    String login;
-    String name;
+    private String login;
+    private String name;
     @Past(message = "День рождения не может быть позже настоящего времени")
-    LocalDate birthday;
+    private LocalDate birthday;
 }

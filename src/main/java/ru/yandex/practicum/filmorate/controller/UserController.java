@@ -18,7 +18,7 @@ public class UserController {
 
     @GetMapping(value = "/users")
     public List<User> getAll() {
-        log.info("Количество пользователей: " + users.size());
+        log.info(String.format("Количество пользователей: %d", users.size()));
         return new ArrayList<>(users.values());
     }
 
@@ -26,7 +26,7 @@ public class UserController {
     public User create(@Valid @RequestBody User newUser) {
         checkName(newUser);
         newUser.setId(id++);
-        log.info("Пользователь " + newUser.getLogin() + " добален.");
+        log.info(String.format("Пользователь %s добален.", newUser.getLogin()));
         users.put(newUser.getId(), newUser);
         return newUser;
     }
@@ -35,17 +35,17 @@ public class UserController {
     public User update(@Valid @RequestBody User newUser) {
         checkName(newUser);
         if (users.containsKey(newUser.getId())) {
-            log.info("Пользователь " + newUser.getLogin() + " обновлен.");
+            log.info(String.format("Пользователь %s обновлен.", newUser.getLogin()));
             users.put(newUser.getId(), newUser);
         } else {
-            log.warn("Пользователь " + newUser.getLogin() + " не найден.");
+            log.warn(String.format("Пользователь %s не найден.", newUser.getLogin()));
             throw new ValidationException("Такого пользователя не существует.");
         }
         return newUser;
     }
 
     private void checkName(User newUser) {
-        if (newUser.getName() == null || newUser.getName().isBlank()) {
+        if (newUser.getName() == null || newUser.getName().isEmpty()) {
             newUser.setName(newUser.getLogin());
         }
     }
