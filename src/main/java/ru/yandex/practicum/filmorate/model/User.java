@@ -9,6 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Builder
@@ -22,4 +23,5 @@ public class User {
     private String name;
     @Past(message = "День рождения не может быть позже настоящего времени")
     private LocalDate birthday;
+    private Set<Integer> friends;
 }

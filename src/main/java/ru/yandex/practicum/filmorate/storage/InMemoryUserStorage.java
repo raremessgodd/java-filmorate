@@ -5,7 +5,9 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -50,5 +52,11 @@ public class InMemoryUserStorage implements UserStorage {
             throw new ValidationException("Такого пользователя не существует.");
         }
         return newUser;
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        log.info(String.format("Количество пользователей: %d", users.size()));
+        return new ArrayList<>(users.values());
     }
 }

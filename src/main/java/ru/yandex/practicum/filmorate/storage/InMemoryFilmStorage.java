@@ -5,7 +5,9 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -41,5 +43,11 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new ValidationException("Такого фильма не существует.");
         }
         return newFilm;
+    }
+
+    @Override
+    public List<Film> getAllFilms() {
+        log.info(String.format("Количество загруженых фильмов: %d", films.size()));
+        return new ArrayList<>(films.values());
     }
 }
