@@ -10,20 +10,28 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private final UserStorage storage = new InMemoryUserStorage();
-    public void addFriend (User user, User friend) {
-        user.getFriends().add(friend.getId());
-        friend.getFriends().add(user.getId());
+    public final UserStorage storage = new InMemoryUserStorage();
+
+    public void addFriend (int userId, int friendId) {
+        storage.getUserById(userId).getFriends().add(friendId);
+        storage.getUserById(friendId).getFriends().add(userId);
     }
 
-    public void deleteFriend (User user, User friend) {
-        user.getFriends().remove(friend.getId());
-        friend.getFriends().remove(user.getId());
+    public void deleteFriend (int userId, int friendId) {
+        storage.getUserById(userId).getFriends().remove(friendId);
+        storage.getUserById(friendId).getFriends().remove(userId);
     }
 
-    public List<User> getAllFriends (User user) {
+    public List<User> getAllMutualFriends (int userId, int otherId) {
         return storage.getAllUsers().stream()
-                .filter(user1 -> user.getFriends().contains(user1.getId()))
+                .filter(user -> user.getFriends().contains(userId)
+                        || user.getFriends().contains(otherId))
+                .collect(Collectors.toList());
+    }
+
+    public List<User> getAllFriends (int userId) {
+        return storage.getAllUsers().stream()
+                .filter(user1 -> storage.getUserById(userId).getFriends().contains(user1.getId()))
                 .collect(Collectors.toList());
     }
 }

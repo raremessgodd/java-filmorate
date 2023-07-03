@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.exceptions.NoSuchUserException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class InMemoryUserStorage implements UserStorage {
             users.remove(user.getId());
         } else {
             log.warn(String.format("Пользователь %s не найден.", user.getLogin()));
-            throw new ValidationException("Такого пользователя не существует.");
+            throw new NoSuchUserException(String.valueOf(user.getId()));
         }
     }
 
@@ -49,7 +49,7 @@ public class InMemoryUserStorage implements UserStorage {
             users.put(newUser.getId(), newUser);
         } else {
             log.warn(String.format("Пользователь %s не найден.", newUser.getLogin()));
-            throw new ValidationException("Такого пользователя не существует.");
+            throw new NoSuchUserException(String.valueOf(newUser.getId()));
         }
         return newUser;
     }
@@ -58,5 +58,15 @@ public class InMemoryUserStorage implements UserStorage {
     public List<User> getAllUsers() {
         log.info(String.format("Количество пользователей: %d", users.size()));
         return new ArrayList<>(users.values());
+    }
+
+    @Override
+    public User getUserById(int id) {
+        if (users.containsKey(id)) {
+            return users.get(id);
+        } else {
+            log.warn(String.format("Пользователь %s не найден.", id));
+            throw new NoSuchUserException(String.valueOf(id));
+        }
     }
 }
