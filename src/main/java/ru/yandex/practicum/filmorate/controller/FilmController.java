@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -40,8 +39,12 @@ public class FilmController {
     }
 
     @GetMapping(value = "/films/popular")
-    public List<Film> getPopular(@RequestParam(required = false) Optional<Integer> count) {
-        return count.map(integer -> service.getMostPopularFilms().subList(0, integer + 1))
-                .orElseGet(service::getMostPopularFilms);
+    public List<Film> getPopular(@RequestParam(required = false) Integer count) {
+        return service.getMostPopularFilms(count);
+    }
+
+    @GetMapping(value = "/films/{id}")
+    public Film getFilmById(@PathVariable int id) {
+        return service.storage.getFilmById(id);
     }
 }

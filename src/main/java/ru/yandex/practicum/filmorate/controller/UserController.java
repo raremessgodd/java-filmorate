@@ -28,6 +28,11 @@ public class UserController {
         return service.storage.updateUser(newUser);
     }
 
+    @GetMapping(value = "/users/{id}")
+    public User getUserById(@PathVariable int id) {
+        return service.storage.getUserById(id);
+    }
+
     @PutMapping(value = "/users/{id}/friends/{friendId}")
     public void addFriend(@PathVariable int id, @PathVariable int friendId) {
         service.addFriend(id, friendId);

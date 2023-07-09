@@ -56,6 +56,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (films.containsKey(id)) {
             return films.get(id);
         } else {
+            log.info(String.format("Фильм под id - %s не найден.", id));
             throw new NoSuchFilmException(String.valueOf(id));
         }
     }
