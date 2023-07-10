@@ -68,14 +68,14 @@ class UserControllerTest {
     @Test
      void createEmptyName() {
         user.setName("");
-        controller.create(user);
+        controller.createUser(user);
         assertEquals(user.getLogin(), user.getName(), "Логин не заменяет имя.");
     }
 
     @Test
     void updateUnknownUser() {
         ValidationException e = assertThrows(ValidationException.class,
-                () -> controller.update(user),
+                () -> controller.updateUser(user),
                 "Не выкидывается исключение.");
         assertEquals("Такого пользователя не существует.",
                 e.getMessage(),
