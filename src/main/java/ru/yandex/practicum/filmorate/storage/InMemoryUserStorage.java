@@ -27,9 +27,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public void deleteUser(User user) {
-        if (user.getName() == null || user.getName().isEmpty()) {
-            user.setName(user.getLogin());
-        }
         if (users.containsKey(user.getId())) {
             log.info(String.format("Пользователь %s удален.", user.getLogin()));
             users.remove(user.getId());
@@ -41,9 +38,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User updateUser(User newUser) {
-        if (newUser.getName() == null || newUser.getName().isEmpty()) {
-            newUser.setName(newUser.getLogin());
-        }
         if (users.containsKey(newUser.getId())) {
             log.info(String.format("Пользователь %s обновлен.", newUser.getLogin()));
             users.put(newUser.getId(), newUser);

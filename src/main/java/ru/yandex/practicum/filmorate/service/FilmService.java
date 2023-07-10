@@ -1,17 +1,39 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.NoSuchUserException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
-    public final FilmStorage storage = new InMemoryFilmStorage();
+    public final FilmStorage storage;
+
+    public FilmService(FilmStorage storage) {
+        this.storage = storage;
+    }
+
+    public List<Film> getAllFilms() {
+        return storage.getAllFilms();
+    }
+
+    public Film addFilm(Film newFilm) {
+        return storage.addFilm(newFilm);
+    }
+
+    public Film updateFilm(Film newFilm) {
+        return storage.updateFilm(newFilm);
+    }
+
+    public Film getFilmById(int id) {
+        return storage.getFilmById(id);
+    }
 
     public void addLike (int userId, int filmId) {
         if (userId < 0) {

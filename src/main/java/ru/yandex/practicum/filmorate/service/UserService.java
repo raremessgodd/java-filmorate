@@ -11,7 +11,31 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    public final UserStorage storage = new InMemoryUserStorage();
+    private final UserStorage storage;
+
+    public UserService(UserStorage storage) {
+        this.storage = storage;
+    }
+
+    public List<User> getAllUsers() {
+        return storage.getAllUsers();
+    }
+
+    public User addUser(User user) {
+        return storage.addUser(user);
+    }
+
+    public void deleteUser(User user) {
+        storage.deleteUser(user);
+    }
+
+    public User getUserById(int id) {
+        return storage.getUserById(id);
+    }
+
+    public User updateUser(User newUser) {
+        return storage.updateUser(newUser);
+    }
 
     public void addFriend (int userId, int friendId) {
         if (userId >= 0 && friendId >= 0) {

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -11,26 +12,31 @@ import java.util.List;
 @Slf4j
 @RestController
 public class UserController {
-    private final UserService service = new UserService();
+    private final UserService service = new UserService(new InMemoryUserStorage());
 
     @GetMapping(value = "/users")
     public List<User> getAllUsers() {
-        return service.storage.getAllUsers();
+        return service.getAllUsers();
     }
 
     @PostMapping(value = "/users")
     public User createUser(@Valid @RequestBody User newUser) {
-        return service.storage.addUser(newUser);
+        return service.addUser(newUser);
+    }
+
+    @DeleteMapping(value = "/users/{id}")
+    public void deleteUser(@PathVariable int id) {
+        service.deleteUser(service.getUserById(id));
     }
 
     @PutMapping(value = "/users")
     public User updateUser(@Valid @RequestBody User newUser) {
-        return service.storage.updateUser(newUser);
+        return service.updateUser(newUser);
     }
 
     @GetMapping(value = "/users/{id}")
     public User getUserById(@PathVariable int id) {
-        return service.storage.getUserById(id);
+        return service.getUserById(id);
     }
 
     @PutMapping(value = "/users/{id}/friends/{friendId}")
